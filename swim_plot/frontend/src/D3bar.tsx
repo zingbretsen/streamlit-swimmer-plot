@@ -87,7 +87,7 @@ class MyComponent extends StreamlitComponentBase<State> {
 
     const customTickFormat = (value: Date | d3.NumberValue) => {
       if (value instanceof Date) {
-        return d3.timeFormat('%m-%d')(value); // Format Date objects
+        return d3.timeFormat('%m/%d/%y')(value); // Format Date objects
       } else {
         return value.toString(); // Convert NumberValue to string
       }
@@ -216,7 +216,7 @@ class MyComponent extends StreamlitComponentBase<State> {
 
     const customTickFormat = (value: Date | d3.NumberValue) => {
       if (value instanceof Date) {
-        return d3.timeFormat('%m-%d')(value); // Format Date objects
+        return d3.timeFormat('%m/%d/%y')(value); // Format Date objects
       } else {
         return value.toString(); // Convert NumberValue to string
       }
