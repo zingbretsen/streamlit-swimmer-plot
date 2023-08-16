@@ -6,7 +6,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
-    name="streamlit-wim-plot",
+    name="streamlit-swim-plot",
     version="0.0.1",
     author="Zach Ingbretsen",
     author_email="zach.ingbretsen@datarobot.com",

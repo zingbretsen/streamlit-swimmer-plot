@@ -71,9 +71,12 @@ class MyComponent extends StreamlitComponentBase<State> {
     const min_date: Date = d3.min(data, d => d["Start Date"]) || new Date();
     const max_date: Date = d3.max(data, d => d["End Date"]) || new Date();
 
-    const chartWidth = 600;
     const chartHeight = countUniqueValues(data, "Label") * 40;
-    const margin = { top: 20, right: 30, bottom: 30, left: 100 };
+
+    const max_label: number = d3.max(data, d => d["Label"].length) || 0;
+    console.log(max_label);
+    const margin = { top: 20, right: 20, bottom: 30, left: max_label * 5 };
+    const chartWidth = 600 - margin['left'] - margin['right'];
     const padding = 0.4;
 
     const svg = d3.select(this.svgRef.current).select('g')
@@ -102,10 +105,9 @@ class MyComponent extends StreamlitComponentBase<State> {
     svg.selectAll("rect")
       .data(data)
       .join(function (enter) {
-        console.log(enter)
         return enter.append('rect')
           .attr("class", "bar")
-          .attr("fill", "white")
+          .attr("fill", "black")
           .on('mouseover', (i, d) => {
             tooltip.text(`${d['Label']} | ${d['Start Date'].toISOString().split('T')[0]} to ${d['End Date'].toISOString().split('T')[0]}`)
           })
@@ -118,7 +120,6 @@ class MyComponent extends StreamlitComponentBase<State> {
           .attr("y", d => y(d["Label"]) || 0)
 
       }, function (update) {
-        console.log(update)
         return update
           .transition()
           .attr("x", d => x(d["Start Date"] || new Date()))
@@ -126,10 +127,52 @@ class MyComponent extends StreamlitComponentBase<State> {
           .attr("width", d => (x(d["End Date"] || new Date()) - x(d["Start Date"] || new Date())))
           .attr("height", y.bandwidth())
 
-      }, function (exit) {
-        console.log(exit)
-        exit.remove()
-      })
+      }, function (exit) {exit.remove()})
+
+    const r = 5 + y.bandwidth()/2;
+    svg.selectAll(".startcircle")
+      .data(data)
+      .join(
+        function (enter) {
+          return enter
+          .append("circle")
+          .attr("class", "circle")
+          .attr("fill", "black")
+          .attr("cx", d => x(d["Start Date"] || new Date()))
+          .attr("cy", d => (y(d["Label"]) || 0) + y.bandwidth()/2)
+          .attr("r", r);
+                         },
+        function (update) {return update
+          .attr("class", "circle")
+          .attr("fill", "black")
+          .attr("cx", d => x(d["Start Date"] || new Date()))
+          .attr("cy", d => (y(d["Label"]) || 0) + y.bandwidth()/2)
+          .attr("r", r);
+                          },
+        function (exit) {exit.remove()}
+      )
+
+    svg.selectAll(".endcircle")
+      .data(data)
+      .join(
+        function (enter) {
+          return enter
+          .append("circle")
+          .attr("class", "circle")
+          .attr("fill", "black")
+          .attr("cx", d => x(d["End Date"] || new Date()))
+          .attr("cy", d => (y(d["Label"]) || 0) + y.bandwidth()/2)
+          .attr("r", r);
+                         },
+        function (update) {return update
+          .attr("class", "circle")
+          .attr("fill", "black")
+          .attr("cx", d => x(d["End Date"] || new Date()))
+          .attr("cy", d => (y(d["Label"]) || 0) + y.bandwidth()/2)
+          .attr("r", r);
+                          },
+        function (exit) {exit.remove()}
+      )
 
     svg.selectAll('g').remove();
     svg.append("g")
@@ -151,11 +194,13 @@ class MyComponent extends StreamlitComponentBase<State> {
 
     const min_date: Date = d3.min(data, d => d["Start Date"]) || new Date();
     const max_date: Date = d3.max(data, d => d["End Date"]) || new Date();
+    const max_label: number = d3.max(data, d => d["Label"].length) || 0;
+    console.log(max_label);
 
-    const chartWidth = 600;
     const chartHeight = countUniqueValues(data, "Label") * 40;
-    const margin = { top: 20, right: 30, bottom: 30, left: 100 };
-    const padding = 0.4;
+    const margin = { top: 20, right: 30, bottom: 30, left: max_label * 5 };
+    const chartWidth = 700 - margin['left'] - margin['right'];
+    const padding = 0.9;
 
     d3.selectAll("svg > *").remove();
     const svg = d3.select(this.svgRef.current)
@@ -164,7 +209,6 @@ class MyComponent extends StreamlitComponentBase<State> {
       .attr("height", chartHeight + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`)
-    // .data(data);
 
     const x = d3.scaleTime()
       .domain([min_date, max_date])
@@ -188,8 +232,8 @@ class MyComponent extends StreamlitComponentBase<State> {
     const tooltip = svg
       .append("text")
       .style("position", "absolute")
-      .attr("stroke", 'white')
-      .attr("fill", 'white')
+      .attr("stroke", 'black')
+      .attr("fill", 'black')
       .attr("x", 10)
       .attr("y", 0)
       .attr("class", "tt")
@@ -200,7 +244,7 @@ class MyComponent extends StreamlitComponentBase<State> {
       .enter()
       .append("rect")
       .attr("class", "bar")
-      .attr("fill", "white")
+      .attr("fill", "black")
       .attr("x", d => x(d["Start Date"] || new Date()))
       .attr("y", d => y(d["Label"]) || 0)
       .attr("width", d => (x(d["End Date"] || new Date()) - x(d["Start Date"] || new Date())))
@@ -212,18 +256,40 @@ class MyComponent extends StreamlitComponentBase<State> {
       })
       .attr("height", y.bandwidth());
 
-    // const r = y.bandwidth()/2;
-    // svg.selectAll(".circle")
-    //   .data(data)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("class", "circle")
-    //   .attr("fill", "white")
-    //   .attr("cx", d => x(d["Start Date"] || new Date()))
-    //   .attr("cy", d => 7 + (r/2) + (y(d["Medication"]) || 0))
-    //   .attr("r", r)
-    //   .attr("height", y.bandwidth());
+    const r = 5 + y.bandwidth()/2;
+    svg.selectAll(".startcircle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", "circle")
+      .attr("fill", "black")
+      .attr("cx", d => x(d["Start Date"] || new Date()))
+      .attr("cy", d => (y(d["Label"]) || 0) + y.bandwidth()/2)
+      .attr("r", r)
+      .attr("class", "startcircle");
 
+    svg.selectAll(".endcircle")
+      .data(data)
+      .join(
+        function (enter) {
+          return enter
+          .append("circle")
+          .attr("class", "circle")
+          .attr("fill", "black")
+          .attr("cx", d => x(d["End Date"] || new Date()))
+          .attr("cy", d => (y(d["Label"]) || 0) + y.bandwidth()/2)
+          .attr("r", r)
+          .attr("class", "endcircle");
+                         },
+        function (update) {return update
+          .attr("class", "circle")
+          .attr("fill", "black")
+          .attr("cx", d => x(d["End Date"] || new Date()))
+          .attr("cy", d => (y(d["Label"]) || 0) + y.bandwidth()/2)
+          .attr("r", r);
+                          },
+        function (exit) {exit.remove()}
+      )
     svg.append("g")
       .attr("class", "x-axis")
       .attr("transform", `translate(0,${chartHeight})`)
@@ -238,6 +304,7 @@ class MyComponent extends StreamlitComponentBase<State> {
 
   public render = (): ReactNode => {
     const { theme } = this.props;
+    console.log(theme);
     const style: React.CSSProperties = {width: "100%"};
 
     return (
