@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medications Bar Plot with d3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .chart {
+            display: block;
+            margin: auto;
+        }
+        .bar {
+            fill: steelblue;
+        }
+        .medication-label {
+            font-size: 14px;
+            text-anchor: end;
+            alignment-baseline: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart"></div>
+
+    <script>
+        // Sample parsed data
+        const data = [
+            { "Medication": "Medication A", "Start Date": new Date("2023-08-01"), "End Date": new Date("2023-08-10") },
+            { "Medication": "Medication B", "Start Date": new Date("2023-08-05"), "End Date": new Date("2023-08-15") },
+            { "Medication": "Medication C", "Start Date": new Date("2023-08-10"), "End Date": new Date("2023-08-20") },
+            { "Medication": "Medication D", "Start Date": new Date("2023-08-15"), "End Date": new Date("2023-08-25") }
+        ];
+
+        const chartWidth = 600;
+        const chartHeight = 400;
+        const margin = { top: 20, right: 30, bottom: 30, left: 100 };
+
+        const svg = d3.select(".chart")
+            .append("svg")
+            .attr("width", chartWidth + margin.left + margin.right)
+            .attr("height", chartHeight + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleTime()
+            .domain([d3.min(data, d => d["Start Date"]), d3.max(data, d => d["End Date"])])
+            .range([0, chartWidth]);
+
+        const y = d3.scaleBand()
+            .domain(data.map(d => d["Medication"]))
+            .range([0, chartHeight])
+            .padding(0.1);
+
+        svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", d => x(d["Start Date"]))
+            .attr("y", d => y(d["Medication"]))
+            .attr("width", d => x(d["End Date"]) - x(d["Start Date"]))
+            .attr("height", y.bandwidth());
+
+        svg.selectAll(".medication-label")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("class", "medication-label")
+            .attr("x", d => x(d["Start Date"]) - 5)
+            .attr("y", d => y(d["Medication"]) + y.bandwidth() / 2)
+            .text(d => d["Medication"]);
+
+        svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0,${chartHeight})`)
+            .call(d3.axisBottom(x));
+
+        svg.append("g")
+            .attr("class", "y-axis")
+            .call(d3.axisLeft(y));
+
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medications Bar Plot with d3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .chart {
+            display: block;
+            margin: auto;
+        }
+        .bar {
+            fill: steelblue;
+        }
+        .medication-label {
+            font-size: 14px;
+            text-anchor: end;
+            alignment-baseline: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="chart"></div>
+
+    <script>
+        // Sample parsed data
+        const data = [
+            { "Medication": "Medication A", "Start Date": new Date("2023-08-01"), "End Date": new Date("2023-08-10") },
+            { "Medication": "Medication B", "Start Date": new Date("2023-08-05"), "End Date": new Date("2023-08-15") },
+            { "Medication": "Medication C", "Start Date": new Date("2023-08-10"), "End Date": new Date("2023-08-20") },
+            { "Medication": "Medication D", "Start Date": new Date("2023-08-15"), "End Date": new Date("2023-08-25") }
+        ];
+
+        const chartWidth = 600;
+        const chartHeight = 400;
+        const margin = { top: 20, right: 30, bottom: 30, left: 100 };
+
+        const svg = d3.select(".chart")
+            .append("svg")
+            .attr("width", chartWidth + margin.left + margin.right)
+            .attr("height", chartHeight + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleTime()
+            .domain([d3.min(data, d => d["Start Date"]), d3.max(data, d => d["End Date"])])
+            .range([0, chartWidth]);
+
+        const y = d3.scaleBand()
+            .domain(data.map(d => d["Medication"]))
+            .range([0, chartHeight])
+            .padding(0.1);
+
+        svg.selectAll(".bar")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("class", "bar")
+            .attr("x", d => x(d["Start Date"]))
+            .attr("y", d => y(d["Medication"]))
+            .attr("width", d => x(d["End Date"]) - x(d["Start Date"]))
+            .attr("height", y.bandwidth());
+
+        svg.selectAll(".medication-label")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("class", "medication-label")
+            .attr("x", d => x(d["Start Date"]) - 5)
+            .attr("y", d => y(d["Medication"]) + y.bandwidth() / 2)
+            .text(d => d["Medication"]);
+
+        svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", `translate(0,${chartHeight})`)
+            .call(d3.axisBottom(x));
+
+        svg.append("g")
+            .attr("class", "y-axis")
+            .call(d3.axisLeft(y));
+
+    </script>
+</body>
+</html>
