@@ -5,7 +5,7 @@ Streamlit component that allows you to make swim plots.
 ## Installation instructions
 
 ```sh
-pip install /path/to/streamlit-swim-plot
+pip install /path/to/streamlit-swimmer-plot
 ```
 
 ## Usage instructions
